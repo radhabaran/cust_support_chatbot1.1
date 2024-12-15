@@ -11,6 +11,7 @@ from langchain.prompts import PromptTemplate
 from langchain_core.messages import AIMessage, HumanMessage
 from langchain_anthropic import ChatAnthropic
 from pathlib import Path
+from dotenv import load_dotenv
 
 # Configure logging
 logging.basicConfig(
@@ -23,6 +24,15 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# Load environment variables
+load_dotenv()
+
+anthro_api_key = os.environ['ANTHRO_KEY']           
+os.environ['ANTHROPIC_API_KEY'] = anthro_api_key
+
+# Initialize LLM
+# llm = ChatAnthropic(model="claude-3-5-sonnet-20240620")
+llm = ChatAnthropic(model="claude-3-haiku-20240307")
 
 class OrderTrackingError(Exception):
     """Base exception class for OrderTracking errors"""
@@ -43,7 +53,7 @@ class ValidationError(OrderTrackingError):
     """Exception raised for validation errors"""
     pass
 
-csv_path = "data\order_track.csv"
+# csv_path = "data/order_track.csv"
 
 
 # Query Analysis Prompt
@@ -64,11 +74,11 @@ User Query: {user_query}
    Any specific requirements or concerns mentioned in the query.
 
 Return the response in this exact JSON format:
-{
+{{
     "query_type": "<type>",
     "order_track_number": "<extracted_number_or_none>",
     "order_details": "<specific_details>"
-}
+}}
 """
 
 # Order Response Prompt
@@ -100,21 +110,21 @@ Response should be friendly but professional.
 """
 
 class OrderTrackingAgent:
-    def __init__(self, csv_path: str = "order_track.csv"):
+    def __init__(self):
         """Initialize the OrderTrackingAgent with CSV path and LLM setup"""
         try:
-            self.csv_path = Path(csv_path)
+            self.csv_path = Path("data/order_track.csv")
             self._validate_csv_file()
             
-            # Set up Anthropic API key
-            self.anthro_api_key = os.environ.get('ANTHRO_KEY')
-            if not self.anthro_api_key:
-                raise APIError("Anthropic API key not found in environment variables")
+            # # Set up Anthropic API key
+            # self.anthro_api_key = os.environ.get('ANTHRO_KEY')
+            # if not self.anthro_api_key:
+            #     raise APIError("Anthropic API key not found in environment variables")
             
-            os.environ['ANTHROPIC_API_KEY'] = self.anthro_api_key
+            # os.environ['ANTHROPIC_API_KEY'] = self.anthro_api_key
             
-            # Initialize Claude model
-            self.llm = ChatAnthropic(model="claude-3-haiku-20240307")
+            # # Initialize Claude model
+            # self.llm = ChatAnthropic(model="claude-3-haiku-20240307")
             
             # Initialize prompts
             self.query_prompt = PromptTemplate(
@@ -176,13 +186,23 @@ class OrderTrackingAgent:
             
             # Analyze query using Claude
             query_analysis = self._analyze_query(last_message)
+            print('*** \nDebugging: rerturned by query analysis : ', query_analysis)
             order_track_number = query_analysis["order_track_number"]
+
+            # Check if order/tracking number is missing for relevant query types
+            if query_analysis["query_type"] in ["track_order", "refund_request", "replacement_request"]:
+                if order_track_number is None or order_track_number == "none" or order_track_number == "":
+                    response = "To help you better, please provide either your order number or tracking number."
+                    state["tracking_response"] = response
+                    state["messages"].append(AIMessage(content=response))
+                    return state
 
             # Check if we're dealing with the same order
             if order_track_number and order_track_number != state.get("current_order"):
                 # New order - fetch details from CSV
                 df = self._read_order_data()
                 order_details = self._get_order_details(df, order_track_number)
+                print('*** \nDebugging: rerturned by first file read : ', order_details)
                 if order_details:
                     state["current_order"] = order_track_number
                     state["current_order_details"] = order_details
@@ -221,7 +241,7 @@ class OrderTrackingAgent:
     def _analyze_query(self, query: str) -> Dict:
         """Analyze user query using Claude"""
         try:
-            chain = self.query_prompt | self.llm
+            chain = self.query_prompt | llm
             result = chain.invoke({"user_query": query})
             
             # Validate and parse the response
@@ -247,16 +267,16 @@ class OrderTrackingAgent:
                     'Tracking number': order_details.get('Tracking number', 'N/A'),
                     'Product name': order_details.get('Product name', 'N/A'),
                     'Quantity': order_details.get('Quantity', 'N/A'),
-                    'Order date': order_details.get('Order date', 'N/A'),
-                    'Delivery date': order_details.get('Delivery date', 'N/A'),
+                    'Order date': order_details.get('Date of order', 'N/A'),
+                    'Delivery date': order_details.get('Date delivered', 'N/A'),
                     'Order status': order_details.get('Order status', 'N/A'),
-                    'Delivery address': order_details.get('Delivery address', 'N/A')
+                    'Delivery address': order_details.get('Address', 'N/A')
                 },
                 'query_type': query_type,
                 'action_taken': action_taken
             }
 
-            chain = self.response_prompt | self.llm
+            chain = self.response_prompt | llm
             return chain.invoke({
                 "order_details": str(formatted_details['order_details']),
                 "query_type": formatted_details['query_type'],
@@ -297,9 +317,11 @@ class OrderTrackingAgent:
             # Use cached order details if available
             if order_track_number == state.get("current_order"):
                 order_details = state["current_order_details"]
+                print('*** \nDebugging: handle_tracking_request : reading from state  : ', order_details)
             else:
                 df = self._read_order_data()
                 order_details = self._get_order_details(df, order_track_number)
+                print('*** \nDebugging: handle_tracking_request : reading from file : ', order_details)
                 if not order_details:
                     return self._create_error_response(
                         state,
@@ -313,7 +335,8 @@ class OrderTrackingAgent:
                 "track_order",
                 "Retrieved order details"
             )
-
+            
+            print('*** \nDebugging: handle_tracking_request : llm response : ', response)
             state["tracking_response"] = response
             state["messages"].append(AIMessage(content=response))
             return state

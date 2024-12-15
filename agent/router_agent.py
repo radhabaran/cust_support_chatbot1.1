@@ -27,16 +27,6 @@ class RouterResponse:
     ORDER_TRACKING = "order_tracking"
 
 
-# def should_process_product_review(state: Dict) -> bool:
-#     """Determine if query should be routed to product review handler"""
-#     return state.get("router_response") == RouterResponse.PRODUCT_REVIEW
-
-
-# def should_process_generic(state: Dict) -> bool:
-#     """Determine if query should be routed to generic handler"""
-#     return state.get("router_response") == RouterResponse.GENERIC
-
-
 def extract_current_message(state: Dict) -> str:
     """Extract the current message from state"""
     if "current_message" in state:
@@ -53,9 +43,9 @@ def extract_current_message(state: Dict) -> str:
 def planning_route_query(state: Dict, config: Dict) -> Dict:
     """Route the query based on content analysis"""
     try:
-        # print("Debug - Config:", config)
-        # Extract current message from state
         current_message = extract_current_message(state)
+        messages = state.get("messages", [])
+        history = messages[:-1] if len(messages) > 1 else []
 
         prompt = f"""Analyze the following query and determine if it's related to product review or a generic query.
         
@@ -69,18 +59,20 @@ def planning_route_query(state: Dict, config: Dict) -> Dict:
         - Product recommendations
         
         Order Tracking queries include:
-        - Order status inquiries
+        - Order status inquiries with order number or tracking number
         - Tracking number requests
-        - Delivery status updates
-        - Order replacement request
-        - Order refund request
-        - Shipping delay questions
-        - Order location tracking
+        - Delivery status updates with order number or tracking number
+        - replacement request with order number or tracking number
+        - refund request with order number or tracking number
+        - order cancellation request with order number or tracking number
+        - Shipping delay questions with with order number or tracking number
+        - Order location tracking with order number or tracking number
         - Estimated delivery time questions
-        - Order confirmation requests
+        - Order confirmation requests 
 
         Generic queries include:
         - Customer service inquiries
+        - Order status inquiries without order number or tracking number
         - Account-related questions
         - Technical support issues
         - Website navigation help
@@ -88,9 +80,13 @@ def planning_route_query(state: Dict, config: Dict) -> Dict:
         - Return policy questions
         - Company information requests
         
-        Query: {current_message}
+        Chat History:
+        {history}
+
+        Current Query:
+        {current_message}
         
-        Return ONLY 'product_review' or 'generic' as response."""
+        Return ONLY 'product_review' or 'order_tracking' or 'generic' as response."""
         
         messages = [HumanMessage(content=prompt)]
         response = llm.invoke(messages, config).content.lower().strip()

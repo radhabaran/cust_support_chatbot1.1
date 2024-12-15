@@ -9,7 +9,7 @@ from agent.router_agent import planning_route_query
 from agent.generic_agent import process_generic_query
 from agent.product_review_agent import setup_product_review_agent
 from agent.composer_agent import compose_response
-from agent.order_tracking_agent import process_tracking_query 
+from agent.order_tracking_agent import OrderTrackingAgent
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -40,12 +40,16 @@ Example:
 def handle_order_tracking(state: Dict, config: dict) -> Dict:
     """Handle order tracking queries using OrderTrackingAgent"""
     try:
-        response = process_tracking_query(state, config)
+        order_tracking_agent = OrderTrackingAgent()
+
+        response = order_tracking_agent.process_tracking_query(state, config)
         
         if "error" in response:
             return {"error": response["error"]}
             
-        return {"order_info": response["tracking_response"]}
+        # return {"order_info": response["tracking_response"]}
+        # return {"order_info": state["tracking_response"]}
+        return state
         
     except Exception as e:
         logger.error(f"Error in handle_order_tracking: {e}")
@@ -81,8 +85,8 @@ def prepare_response_for_composer(state: Dict, config: dict) -> Dict:
         elif "generic_response" in state:
             response_text = state["generic_response"]
             print("*****response_text****", response_text)
-        elif "current_order_details" in state:  # New condition for order tracking
-            response_text = state["current_order_details"]
+        elif "tracking_response" in state:  # New condition for order tracking
+            response_text = state["tracking_response"]
         else:
             response_text = "I apologize, but I couldn't process your request properly. Please try again."
         
@@ -145,7 +149,7 @@ def setup_agent_graph(State: Type) -> tuple[StateGraph, MemorySaver]:
         route_next_step,
         {
             "product": "get_product_info",
-            "generic": "handle_generic_query"
+            "generic": "handle_generic_query",
             "order_tracking": "handle_order_tracking"
         }
     )
