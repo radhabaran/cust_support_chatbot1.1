@@ -1,0 +1,35 @@
+typing-extensions
+
+# LangChain Ecosystem
+
+langchain
+langchain_openai
+langchain-anthropic
+langchain-community
+langchain-core
+langchain-text-splitters
+langgraph
+langchain_experimental
+
+# Vector Databases & Similarity Search
+chromadb==0.5.0
+faiss-cpu
+pysqlite3-binary
+
+# OpenAI
+openai
+tiktoken
+
+# UI Framework
+IPython
+gradio==4.44.1
+setuptools>=65.5.1
+
+# Data Processing & Utils
+numpy<2.0.0
+pandas
+python-dotenv
+
+# Core Dependencies
+#pydantic==2.5.2
+requests
