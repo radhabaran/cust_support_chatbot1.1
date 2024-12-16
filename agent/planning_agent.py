@@ -65,7 +65,7 @@ def get_product_info(state: Dict, config: dict) -> Dict:
         print('*** \nDebugging: response received at planning agent : ', state["product_info"])
 
         state["response_to_composer"] = state["product_info"]
-        print('*** \nDebugging: after state uption in planning agent : ', state["response_to_composer"])
+        print('*** \nDebugging: after state updation in planning agent : ', state["response_to_composer"])
         if "error" in response:
             return {"error": response["error"]}
             
@@ -83,17 +83,8 @@ def prepare_response_for_composer(state: Dict, config: dict) -> Dict:
     logger.info(f"Preparing response for thread {thread_id}")
     
     try:
-        # Extract the response text based on query type
+        
         response_text = state["response_to_composer"]
-        # if "product_info" in state:
-        #     response_text = state["product_info"]
-        # elif "generic_response" in state:
-        #     response_text = state["generic_response"]
-        #     print("*****response_text****", response_text)
-        # elif "tracking_response" in state:  # New condition for order tracking
-        #     response_text = state["tracking_response"]
-        # else:
-        #     response_text = "I apologize, but I couldn't process your request properly. Please try again."
         
         print('*** \nDebugging: response_text prepared at planning agent for composer: ', response_text)
         # Create a temporary state for composer

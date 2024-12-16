@@ -161,7 +161,16 @@ class ProductReviewAgent:
         """Process product review queries"""
         try:
             messages = state["messages"]
-            query = messages[-1].content
+            last_message = messages[-1]
+            
+            # Extract content properly based on message type
+            if isinstance(last_message, (HumanMessage, AIMessage)):
+                query = last_message.content
+            elif isinstance(last_message, str):
+                query = last_message
+            else:
+                query = str(last_message)
+
             thread_id = config["configurable"]["thread_id"]
             
             logger.info(f"Processing product_review query for thread {thread_id}")
@@ -174,7 +183,10 @@ class ProductReviewAgent:
             results = retriever.invoke(query)
             
             if not results:
-                return {"error": "No relevant information found"}
+                response = "I apologize, but I couldn't find any relevant product information for your query."
+                state["product_info"] = response
+                state["messages"].append(AIMessage(content=response))
+                return state
                 
             context = "\n\n".join([doc.page_content for doc in results])
             
@@ -183,11 +195,18 @@ class ProductReviewAgent:
                 SystemMessage(content=self.system_prompt),
                 HumanMessage(content=self._format_review_prompt(query, context))
             ]
+
             response = self.llm.invoke(messages)
-            print('*** \nDebugging: response returned by llm in product_review agent : ', response)
+
+            if isinstance(response.content, str):
+                response_content = response.content
+            else:
+                response_content = str(response.content)
+
+            print('*** \nDebugging: response returned by llm in product_review agent : ', response_content)
             
-            state["product_info"] = response.content
-            state["messages"].append(AIMessage(content=response))
+            state["product_info"] = response_content
+            state["messages"].append(AIMessage(content=response_content))
             
             # return {
             #     "review_response": response.content,
@@ -197,7 +216,10 @@ class ProductReviewAgent:
             
         except Exception as e:
             logger.error(f"Error processing review query: {e}")
-            return {"error": str(e)}
+            error_msg = "I apologize, but I encountered an error while processing your product request."
+            state["product_info"] = error_msg
+            state["messages"].append(AIMessage(content=error_msg))
+            return state
 
 
     def _format_review_prompt(self, query: str, context: str) -> str:

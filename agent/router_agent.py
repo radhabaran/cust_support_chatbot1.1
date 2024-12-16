@@ -51,6 +51,7 @@ def planning_route_query(state: Dict, config: Dict) -> Dict:
         
         Product Review queries include:
         - Questions about product features, specifications, or capabilities
+        - Question on any product model
         - Product prices and availability inquiries
         - Requests for product reviews or comparisons
         - Product warranty or guarantee questions
