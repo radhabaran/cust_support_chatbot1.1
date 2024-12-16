@@ -20,6 +20,7 @@ class State(TypedDict):
     current_order: NotRequired[str]
     current_order_details: NotRequired[str]
     tracking_response: NotRequired[str]
+    response_to_composer: NotRequired[str]
 
 
 class AgentManager:

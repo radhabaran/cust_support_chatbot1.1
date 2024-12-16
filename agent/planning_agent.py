@@ -43,10 +43,10 @@ def handle_order_tracking(state: Dict, config: dict) -> Dict:
         order_tracking_agent = OrderTrackingAgent()
 
         response = order_tracking_agent.process_tracking_query(state, config)
-        
+        state['response_to_composer'] = state['tracking_response']
         if "error" in response:
             return {"error": response["error"]}
-            
+        print('*** \nDebugging: response received in planning agent : ', state['tracking_response'])
         # return {"order_info": response["tracking_response"]}
         # return {"order_info": state["tracking_response"]}
         return state
@@ -61,6 +61,7 @@ def get_product_info(state: Dict, config: dict) -> Dict:
     try:
         product_agent = setup_product_review_agent()
         response = product_agent.process_review_query(state, config)
+        state["response_to_composer"] = response["review_response"]
         
         if "error" in response:
             return {"error": response["error"]}
@@ -79,17 +80,18 @@ def prepare_response_for_composer(state: Dict, config: dict) -> Dict:
     
     try:
         # Extract the response text based on query type
-        response_text = ""
-        if "product_info" in state:
-            response_text = state["product_info"]
-        elif "generic_response" in state:
-            response_text = state["generic_response"]
-            print("*****response_text****", response_text)
-        elif "tracking_response" in state:  # New condition for order tracking
-            response_text = state["tracking_response"]
-        else:
-            response_text = "I apologize, but I couldn't process your request properly. Please try again."
+        response_text = state["response_to_composer"]
+        # if "product_info" in state:
+        #     response_text = state["product_info"]
+        # elif "generic_response" in state:
+        #     response_text = state["generic_response"]
+        #     print("*****response_text****", response_text)
+        # elif "tracking_response" in state:  # New condition for order tracking
+        #     response_text = state["tracking_response"]
+        # else:
+        #     response_text = "I apologize, but I couldn't process your request properly. Please try again."
         
+        print('*** \nDebugging: response_text prepared at planning agent for composer: ', response_text)
         # Create a temporary state for composer
         composer_state = {
             "messages": state["messages"],
@@ -101,6 +103,7 @@ def prepare_response_for_composer(state: Dict, config: dict) -> Dict:
         
         # Selectively update state
         state["final_response"] = composed_state.get("final_response", "")
+        print('*** \nDebugging: final response received at planning agent from composer: ', state["final_response"])
         # if "messages" in composed_state:
         #     state["messages"].extend(composed_state["messages"])
         

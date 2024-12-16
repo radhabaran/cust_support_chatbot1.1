@@ -59,20 +59,19 @@ def planning_route_query(state: Dict, config: Dict) -> Dict:
         - Product recommendations
         
         Order Tracking queries include:
-        - Order status inquiries with order number or tracking number
+        - Order status inquiries
         - Tracking number requests
-        - Delivery status updates with order number or tracking number
-        - replacement request with order number or tracking number
-        - refund request with order number or tracking number
-        - order cancellation request with order number or tracking number
-        - Shipping delay questions with with order number or tracking number
-        - Order location tracking with order number or tracking number
+        - Delivery status updates
+        - replacement request
+        - refund request
+        - order cancellation request
+        - Shipping delay questions
+        - Order location tracking
         - Estimated delivery time questions
         - Order confirmation requests 
 
         Generic queries include:
         - Customer service inquiries
-        - Order status inquiries without order number or tracking number
         - Account-related questions
         - Technical support issues
         - Website navigation help

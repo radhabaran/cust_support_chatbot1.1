@@ -73,9 +73,9 @@ def process_generic_query(state: Dict, config: dict) -> Dict:
 
         response = llm.invoke(messages)
 
-        
         # Update the state instead of returning new dictionary
         state["generic_response"] = response.content
+        state["response_to_composer"] = response.content
         
         return state
         # return {"generic_response": response.content}

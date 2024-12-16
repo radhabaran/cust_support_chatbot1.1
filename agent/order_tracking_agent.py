@@ -115,18 +115,7 @@ class OrderTrackingAgent:
         try:
             self.csv_path = Path("data/order_track.csv")
             self._validate_csv_file()
-            
-            # # Set up Anthropic API key
-            # self.anthro_api_key = os.environ.get('ANTHRO_KEY')
-            # if not self.anthro_api_key:
-            #     raise APIError("Anthropic API key not found in environment variables")
-            
-            # os.environ['ANTHROPIC_API_KEY'] = self.anthro_api_key
-            
-            # # Initialize Claude model
-            # self.llm = ChatAnthropic(model="claude-3-haiku-20240307")
-            
-            # Initialize prompts
+
             self.query_prompt = PromptTemplate(
                 template=QUERY_ANALYSIS_PROMPT,
                 input_variables=["user_query"]
