@@ -61,12 +61,16 @@ def get_product_info(state: Dict, config: dict) -> Dict:
     try:
         product_agent = setup_product_review_agent()
         response = product_agent.process_review_query(state, config)
-        state["response_to_composer"] = response["review_response"]
-        
+
+        print('*** \nDebugging: response received at planning agent : ', state["product_info"])
+
+        state["response_to_composer"] = state["product_info"]
+        print('*** \nDebugging: after state uption in planning agent : ', state["response_to_composer"])
         if "error" in response:
             return {"error": response["error"]}
             
-        return {"product_info": response["review_response"]}
+        # return {"product_info": response["review_response"]}
+        return state
         
     except Exception as e:
         logger.error(f"Error in get_product_info: {e}")

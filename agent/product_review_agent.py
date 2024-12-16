@@ -164,7 +164,7 @@ class ProductReviewAgent:
             query = messages[-1].content
             thread_id = config["configurable"]["thread_id"]
             
-            logger.info(f"Processing review query for thread {thread_id}")
+            logger.info(f"Processing product_review query for thread {thread_id}")
             
             # Retrieve relevant documents
             retriever = self.vectorstore.as_retriever(
@@ -184,11 +184,16 @@ class ProductReviewAgent:
                 HumanMessage(content=self._format_review_prompt(query, context))
             ]
             response = self.llm.invoke(messages)
+            print('*** \nDebugging: response returned by llm in product_review agent : ', response)
             
-            return {
-                "review_response": response.content,
-                "thread_id": thread_id
-            }
+            state["product_info"] = response.content
+            state["messages"].append(AIMessage(content=response))
+            
+            # return {
+            #     "review_response": response.content,
+            #     "thread_id": thread_id
+            # }
+            return state
             
         except Exception as e:
             logger.error(f"Error processing review query: {e}")
