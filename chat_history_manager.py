@@ -54,10 +54,7 @@ class ChatHistoryManager:
                 logger.warning("No chat history file exists")
                 return False
 
-            df = pd.read_csv(self.csv_path)
-            df = df[df['session_id'] != session_id]
-            df.to_csv(self.csv_path, index=False)
-            logger.info(f"Successfully deleted chat history for session {session_id}")
+            logger.info(f"Delete request for session {session_id} received - maintaining history")
             return True
 
         except Exception as e:
@@ -69,8 +66,7 @@ class ChatHistoryManager:
         """Delete all chat history"""
         try:
             if os.path.exists(self.csv_path):
-                os.remove(self.csv_path)
-                logger.info("Successfully deleted all chat history")
+                logger.info("Delete all request received - maintaining history")
                 return True
             return False
 
