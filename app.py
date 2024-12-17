@@ -6,6 +6,7 @@ from interface import create_interface
 from agent.planning_agent import setup_agent_graph
 from langchain_core.messages import HumanMessage, AIMessage
 from langgraph.graph.message import add_messages
+from chat_history_manager import ChatHistoryManager
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -27,6 +28,7 @@ class AgentManager:
     def __init__(self):
         self.session_id = str(uuid.uuid4())
         self.graph, self.memory = setup_agent_graph(State)
+        self.chat_history_manager = ChatHistoryManager()
         logger.info(f"Initialized AgentManager with session_id: {self.session_id}")
         self.config = {"configurable": {"thread_id": self.session_id}}
 
@@ -50,6 +52,9 @@ class AgentManager:
 
             # Langgraph will automatically merge this with existing state
             result = self.graph.invoke(input_state, config=self.config)
+
+            # Save chat history after processing
+            self.chat_history_manager.save_chat_history(self.session_id, result['messages'])
             
             # Debug print for result
             print('@' * 100)
@@ -73,6 +78,8 @@ class AgentManager:
     def clear_context(self, session_id: str) -> tuple[List, str]:
         """Clear the conversation context for a session"""
         try:
+            # Delete the session history when clearing context
+            self.chat_history_manager.delete_session_history(session_id)
             return [], ""
         except Exception as e:
             logger.error(f"Error clearing context: {e}")
