@@ -60,7 +60,7 @@ def remove_system_artifacts(text: str) -> str:
     for artifact in artifacts:
         cleaned = cleaned.replace(artifact, "")
     # Remove double quotes
-    cleaned = cleaned.replace('"', '').replace("'", "")  # Removes both double and single quotes
+    # cleaned = cleaned.replace('"', '').replace("'", "")  # Removes both double and single quotes
     
     return cleaned.strip()
 

@@ -1,5 +1,5 @@
 Index,Order number,Tracking number,Product name,Quantity,Price,Date of order,Date of dispatch,Date delivered,Order status,Address
-1,804-4506694-2924998,AMZN946201365499,saucony,4,57.79,2024-11-25,2024-11-25,2024-12-05,Pending,"Shantanu D, #375, Laad Bazaar, City Rural, Bangalore, OD, 364312"
+1,804-4506694-2924998,AMZN946201365499,saucony,4,57.79,2024-11-25,2024-11-25,2024-12-05,Refund Requested,"Shantanu D, #375, Laad Bazaar, City Rural, Bangalore, OD, 364312"
 2,628-4678470-9651607,A317791991819,kishigo,5,28.5,2024-11-25,2024-11-28,2024-12-02,Refund Requested,"Anshul A, #932, Bajirao Road, City Sub-urban, Cuttack , KL, 873544"
 3,128-8634589-2579248,TBA300001564579,twinsluxes,2,33.99,2024-11-25,2024-11-25,2024-11-28,Delivered,"Radhabaran M, #263, Bajirao Road, City Urban, Hyderabad, OD, 238139"
 4,478-6262082-7760364,AMZN375179822378,accutire,3,17.95,2024-11-25,2024-11-27,2024-11-30,Pending,"Sahana, #559, Bidyut Marg, City Urban, Hyderabad, KA, 127185"
@@ -91,7 +91,7 @@ Index,Order number,Tracking number,Product name,Quantity,Price,Date of order,Dat
 90,772-8230913-2076299,TBA726486156464,mryok,3,12.98,2024-11-25,2024-11-26,2024-11-25,Cancelled,"Pallabi P, #207,  MG Road, City Urban, Bangalore, OD, 455894"
 91,138-7681643-2886410,AMZN496064166277,oakley young mens,5,17.81,2024-11-25,2024-11-27,2024-11-25,Pending,"Sahana, #160, S M Street, City Sub-urban, Bangalore, KL, 143506"
 92,444-1053452-3164658,A462904930263,amazon essentials,7,26.32,2024-11-25,2024-11-28,2024-12-04,Out for Delivery,"George J, #436, Bajirao Road, City Urban, Bangalore, TN, 187186"
-93,195-8673680-2369386,A897659622620,tfroco,7,18.99,2024-11-25,2024-11-27,2024-12-02,Delivered,"George J, #639, S M Street, City Rural, NamakKal, KA, 294781"
+93,195-8673680-2369386,A897659622620,tfroco,7,18.99,2024-11-25,2024-11-27,2024-12-02,Replacement Requested,"George J, #639, S M Street, City Rural, NamakKal, KA, 294781"
 94,567-5044203-3755392,TBA296739442281,xerox,6,126.98,2024-11-25,2024-11-25,2024-11-29,Cancelled,"Sridhar K S, #251, Bidyut Marg, City Rural, Thiruvananthapuram, OD, 753500"
 95,314-9630192-2024201,TBA162819072522,ouray sportswear,7,38.67,2024-11-25,2024-11-28,2024-12-05,Shipped,"Nikhil G, #681,  MG Road, City Urban, Bangalore, OD, 757570"
 96,653-3634813-8872995,A623531199711,phantoscope,1,32.99,2024-11-25,2024-11-27,2024-11-30,Out for Delivery,"Sridhar K S, #183, Bidyut Marg, City Rural, Thiruvananthapuram, AP, 512852"

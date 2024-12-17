@@ -9,7 +9,7 @@ from datetime import datetime
 logger = logging.getLogger(__name__)
 
 class ChatHistoryManager:
-    def __init__(self, csv_path: str = "chat_histories.csv"):
+    def __init__(self, csv_path: str = "data/chat_histories.csv"):
         self.csv_path = csv_path
 
 
