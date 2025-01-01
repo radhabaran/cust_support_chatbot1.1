@@ -47,7 +47,10 @@ def planning_route_query(state: Dict, config: Dict) -> Dict:
         messages = state.get("messages", [])
         history = messages[:-1] if len(messages) > 1 else []
 
-        prompt = f"""Analyze the following query and determine if it's related to product review or a generic query.
+        prompt = f"""Analyze the following query and determine if it's related to product review or a generic query. Whenever
+        user asks the availability of any product, understand that user is asking about the product in 
+        Amazon product catalogue. Infer Amazon product catalogue even if nothing is mentioned about the
+        source of the product.
         
         Product Review queries include:
         - Questions about product features, specifications, or capabilities
