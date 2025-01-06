@@ -70,8 +70,8 @@ def format_response(text: str) -> str:
     # Add proper spacing
     formatted = text.replace("\n\n\n", "\n\n")
     
-    # Ensure proper capitalization
-    formatted = ". ".join(s.strip().capitalize() for s in formatted.split(". "))
+    # # Ensure proper capitalization
+    # formatted = ". ".join(s.strip().capitalize() for s in formatted.split(". "))
     
     # Ensure proper ending punctuation
     if formatted and not formatted[-1] in ['.', '!', '?']:

@@ -18,7 +18,7 @@ os.environ['ANTHROPIC_API_KEY'] = anthro_api_key
 
 # Initialize LLM
 # llm = ChatAnthropic(model="claude-3-5-sonnet-20240620")
-llm = ChatAnthropic(model="claude-3-haiku-20240307")
+llm = ChatAnthropic(model="claude-3-haiku-20240307",temperature=0)
 
 
 class RouterResponse:
@@ -50,8 +50,19 @@ def planning_route_query(state: Dict, config: Dict) -> Dict:
         prompt = f"""Analyze the following query and determine if it's related to product review or a generic query. Whenever
         user asks the availability of any product, understand that user is asking about the product in 
         Amazon product catalogue. Infer Amazon product catalogue even if nothing is mentioned about the
-        source of the product.
+        source of the product. Amazon product catalogue is the context provided to you.
         
+        Generic queries include:
+        - Customer happiness message
+        - Customer grievance on various topics such as product delivery, products got damaged during transportation, delayed delivery, delivered at wrong address
+        - Customer service inquiries such steps or process to cancel or replacement
+        - Account-related questions
+        - Technical support issues
+        - Website navigation help
+        - Payment or billing queries
+        - Return policy questions
+        - Company information requests
+
         Product Review queries include:
         - Questions about product features, specifications, or capabilities
         - Question on any product model
@@ -67,17 +78,7 @@ def planning_route_query(state: Dict, config: Dict) -> Dict:
         - Order refund request
         - Order cancellation request
 
-        Generic queries include:
-        - Customer happiness message
-        - Customer grievance
-        - Customer service inquiries
-        - Account-related questions
-        - Technical support issues
-        - Website navigation help
-        - Payment or billing queries
-        - Return policy questions
-        - Company information requests
-        
+     
         Chat History:
         {history}
 

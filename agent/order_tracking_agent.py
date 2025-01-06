@@ -32,7 +32,7 @@ os.environ['ANTHROPIC_API_KEY'] = anthro_api_key
 
 # Initialize LLM
 # llm = ChatAnthropic(model="claude-3-5-sonnet-20240620")
-llm = ChatAnthropic(model="claude-3-haiku-20240307")
+llm = ChatAnthropic(model="claude-3-haiku-20240307",temperature=0)
 
 class OrderTrackingError(Exception):
     """Base exception class for OrderTracking errors"""
